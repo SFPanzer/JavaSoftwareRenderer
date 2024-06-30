@@ -14,6 +14,10 @@ public abstract class Shader {
         globalMatrix.put(name, matrix4x4);
     }
 
+    public static Matrix4x4 getGlobalMatrix(String name) {
+        return globalMatrix.get(name);
+    }
+
     public abstract VertexAttribute vertexShader(VertexAttribute input);
 
     public abstract ColorRGBA fragmentShader(VertexAttribute input);

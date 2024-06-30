@@ -8,8 +8,13 @@ import com.example.component.Transform;
 
 public class SceneObject {
     public Scene scene = null;
+    public String name;
     public Transform transform = new Transform();
     public ArrayList<Component> components = new ArrayList<>();
+
+    public SceneObject(String name) {
+        this.name = name;
+    }
 
     public <T extends Component> T getComponent(Class<T> type) {
         for (Component component : components) {

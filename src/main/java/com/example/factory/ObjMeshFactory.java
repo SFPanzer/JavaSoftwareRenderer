@@ -54,7 +54,7 @@ public class ObjMeshFactory {
         String[] tokens = line.split(" ");
 
         float x = Float.parseFloat(tokens[1]);
-        float y = Float.parseFloat(tokens[2]);
+        float y = -Float.parseFloat(tokens[2]);
         float z = Float.parseFloat(tokens[3]);
         float w = 1f;
 
@@ -88,7 +88,7 @@ public class ObjMeshFactory {
         String[] tokens = line.split(" ");
 
         float x = Float.parseFloat(tokens[1]);
-        float y = Float.parseFloat(tokens[2]);
+        float y = -Float.parseFloat(tokens[2]);
         float z = Float.parseFloat(tokens[3]);
 
         Vector3 normal = new Vector3(x, y, z);

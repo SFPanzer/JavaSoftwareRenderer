@@ -33,8 +33,8 @@ public class Camera extends Component {
                         -cameraTransform.position.z));
 
         Matrix4x4 RotationXMatrix = Transform.getRotationXMatrix(-cameraTransform.eulerAngle.x);
-        Matrix4x4 RotationYMatrix = Transform.getRotationXMatrix(-cameraTransform.eulerAngle.y);
-        Matrix4x4 RotationZMatrix = Transform.getRotationXMatrix(-cameraTransform.eulerAngle.z);
+        Matrix4x4 RotationYMatrix = Transform.getRotationYMatrix(-cameraTransform.eulerAngle.y);
+        Matrix4x4 RotationZMatrix = Transform.getRotationZMatrix(-cameraTransform.eulerAngle.z);
         Matrix4x4 RotationMatrix = Matrix4x4.mult(RotationZMatrix, Matrix4x4.mult(RotationXMatrix, RotationYMatrix));
 
         Matrix4x4 WorldToCameraMatrix = Matrix4x4.mult(RotationMatrix, TranslationMatrix);
@@ -51,7 +51,7 @@ public class Camera extends Component {
                 2 / width, 0, 0, 0,
                 0, 2 / height, 0, 0,
                 0, 0, 1 / (far - near), -near / (far - near),
-                0, 0, 0, 0);
+                0, 0, 0, 1);
 
         return orthographicMatrix;
     }

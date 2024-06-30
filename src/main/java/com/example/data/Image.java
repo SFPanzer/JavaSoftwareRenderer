@@ -34,7 +34,7 @@ public class Image {
     }
 
     public void drawPixel(int x, int y, ColorRGBA color) {
-        if (x > width || x < 0 || y > height || y < 0) {
+        if (x >= width || x < 0 || y >= height || y < 0) {
             return;
         }
 

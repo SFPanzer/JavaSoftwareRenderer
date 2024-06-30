@@ -18,9 +18,9 @@ public class Transform {
     }
 
     public Transform() {
-        position = Vector3.ZERO;
-        eulerAngle = Vector3.ZERO;
-        scale = Vector3.ONE;
+        position = new Vector3(0, 0, 0);
+        eulerAngle = new Vector3(0, 0, 0);
+        scale = new Vector3(1, 1, 1);
         parent = null;
     }
 
@@ -85,8 +85,8 @@ public class Transform {
         Matrix4x4 translationMatrix = getTranslationMatrix(position);
         // Calculate Rotation matrix.
         Matrix4x4 rotationX = getRotationXMatrix(eulerAngle.x);
-        Matrix4x4 rotationY = getRotationXMatrix(eulerAngle.y);
-        Matrix4x4 rotationZ = getRotationXMatrix(eulerAngle.z);
+        Matrix4x4 rotationY = getRotationYMatrix(eulerAngle.y);
+        Matrix4x4 rotationZ = getRotationZMatrix(eulerAngle.z);
         Matrix4x4 rotationMatrix = Matrix4x4.mult(rotationY, Matrix4x4.mult(rotationX, rotationZ));
 
         // Calculate Scale Matrix.

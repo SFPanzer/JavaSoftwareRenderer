@@ -7,6 +7,7 @@ import com.example.component.MeshRenderer;
 import com.example.data.ColorRGBA;
 import com.example.data.Image;
 import com.example.data.Matrix4x4;
+import com.example.data.VertexAttribute;
 import com.example.shader.Shader;
 
 public class RenderContext {
@@ -82,6 +83,45 @@ public class RenderContext {
     }
 
     private void drawRenderer(MeshRenderer meshRenderer) {
+        Matrix4x4 matrixM = meshRenderer.getAttachedSceneObject().transform.getLocalToWorldMatrix();
+        Shader.setGlobalMatrix("MATRIX_MVP", Matrix4x4.mult(Shader.getGlobalMatrix("MATRIX_VP"), matrixM));
+
+        // Execute VertexShader;
+        VertexAttribute[] vertexShaderOutput = new VertexAttribute[meshRenderer.mesh.vertexBuffer.length];
+        for (int i = 0; i < vertexShaderOutput.length; i++) {
+            vertexShaderOutput[i] = meshRenderer.shader.vertexShader(meshRenderer.mesh.vertexBuffer[i]);
+        }
+
+        // Primitive Assembly;
+        for (int i = 0; i < meshRenderer.mesh.elementBuffer.length / 3; i++) {
+            boolean isDiscarded = true;
+            VertexAttribute[] primitiveVertices = new VertexAttribute[3];
+            for (int j = 0; j < 3; j++) {
+                VertexAttribute v = vertexShaderOutput[meshRenderer.mesh.elementBuffer[3 * i + j]];
+                // Check if inside View Frustum.
+                if (v.position.x > -1 && v.position.x < 1 &&
+                        v.position.y > -1 && v.position.y < 1 &&
+                        v.position.z > 0 && v.position.z < 1) {
+                    isDiscarded = false;
+                }
+                primitiveVertices[j] = v;
+            }
+            // Skip when all vertices of attribute out of View Frustum.
+            if (isDiscarded) {
+                continue;
+            }
+            // Translate to NDC;
+            for (int j = 0; j < 3; j++) {
+                VertexAttribute v = primitiveVertices[j];
+                v.position.x /= v.position.w;
+                v.position.y /= v.position.w;
+                v.position.z /= v.position.w;
+
+                int x = (int) ((frameBuffer.getWidth() / 2) * (1 + v.position.x));
+                int y = (int) ((frameBuffer.getHeight() / 2) * (1 + v.position.y));
+                frameBuffer.drawPixel(x, y, ColorRGBA.WHITE);
+            }
+        }
 
     }
 }
