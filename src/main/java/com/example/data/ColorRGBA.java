@@ -11,7 +11,7 @@ public class ColorRGBA {
     public static final ColorRGBA RED = new ColorRGBA(0xFF0000FF);
     public static final ColorRGBA GREEN = new ColorRGBA(0x00FF00FF);
     public static final ColorRGBA BLUE = new ColorRGBA(0x0000FFFF);
-    public static final ColorRGBA DARKGRAY = new ColorRGBA(0x666666FF);
+    public static final ColorRGBA MAGENTA = new ColorRGBA(0xFF00FFFF);
 
     public ColorRGBA() {
         r = g = b = a = (byte) 0xFF;

@@ -1,6 +1,10 @@
 package com.example.renderer;
 
+import java.util.ArrayList;
+
 import com.example.component.Camera;
+import com.example.component.MeshRenderer;
+import com.example.data.ColorRGBA;
 import com.example.data.Image;
 import com.example.data.Matrix4x4;
 import com.example.shader.Shader;
@@ -34,10 +38,17 @@ public class RenderContext {
             int index = y * width + x;
             data[index] = depth;
         }
+
+        public void fill(float depth) {
+            for (int i = 0; i < width * height; i++) {
+                data[i] = depth;
+            }
+        }
     }
 
     public final Image frameBuffer;
     public final DepthBuffer depthBuffer;
+    public final ArrayList<MeshRenderer> meshRenderers = new ArrayList<>();
 
     public RenderContext(int width, int height) {
         frameBuffer = new Image(width, height);
@@ -47,5 +58,30 @@ public class RenderContext {
     public void SetCameraProperties(Camera camera) {
         Shader.setGlobalMatrix("MATRIX_VP",
                 Matrix4x4.mult(camera.getProjectionMatrix(), camera.getWorldToCameraMatrix()));
+    }
+
+    public void clearRenderTarget(boolean clearDepth, boolean clearColor, ColorRGBA backgroundColor,
+            float depth) {
+        if (clearDepth) {
+            depthBuffer.fill(depth);
+        }
+        if (clearColor) {
+            frameBuffer.fill(backgroundColor);
+        }
+    }
+
+    public void clearRenderTarget(boolean clearDepth, boolean clearColor, ColorRGBA backgroundColor) {
+        clearRenderTarget(clearDepth, clearColor, backgroundColor, 1f);
+    }
+
+    public void drawRenderers() {
+        for (var renderer : meshRenderers) {
+            drawRenderer(renderer);
+        }
+        meshRenderers.clear();
+    }
+
+    private void drawRenderer(MeshRenderer meshRenderer) {
+
     }
 }

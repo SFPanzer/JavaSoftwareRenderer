@@ -1,7 +1,9 @@
 package com.example.application;
 
 import com.example.Scene.Scene;
+import com.example.component.Camera;
 import com.example.renderer.RenderContext;
+import com.example.renderer.RenderPipeline;
 import com.example.renderer.Screen;
 
 public abstract class Application {
@@ -10,6 +12,7 @@ public abstract class Application {
     protected String title;
 
     private Screen screen;
+    public RenderPipeline renderPipeline;
     private RenderContext renderContext;
     private boolean isRunning;
 
@@ -35,7 +38,7 @@ public abstract class Application {
         screen = new Screen(width, height, title);
         renderContext = new RenderContext(width, height);
 
-        scene = new Scene();
+        scene = new Scene(this);
 
         initialize();
         scene.start();
@@ -64,6 +67,7 @@ public abstract class Application {
     protected abstract void update(float delta);
 
     protected void render(float delta) {
+        renderPipeline.Render(Camera.mainCamera, renderContext);
         screen.swapBuffer(renderContext.frameBuffer, framePerSecond);
     }
 

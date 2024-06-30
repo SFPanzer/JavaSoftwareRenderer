@@ -7,6 +7,7 @@ import com.example.component.Component;
 import com.example.component.Transform;
 
 public class SceneObject {
+    public Scene scene = null;
     public Transform transform = new Transform();
     public ArrayList<Component> components = new ArrayList<>();
 

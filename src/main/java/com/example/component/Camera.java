@@ -1,7 +1,5 @@
 package com.example.component;
 
-import java.util.ArrayList;
-
 import com.example.Scene.SceneObject;
 import com.example.data.Image;
 import com.example.data.Matrix4x4;
@@ -13,7 +11,7 @@ public class Camera extends Component {
         PERSPECTIVE
     }
 
-    public static ArrayList<Camera> cameras = new ArrayList<>();
+    public static Camera mainCamera;
 
     public Image renderTarget;
     public Projection projection = Projection.PERSPECTIVE;
@@ -23,7 +21,6 @@ public class Camera extends Component {
 
     public Camera(SceneObject attachedObject) {
         super(attachedObject);
-        cameras.add(this);
     }
 
     public Matrix4x4 getWorldToCameraMatrix() {
@@ -96,6 +93,5 @@ public class Camera extends Component {
 
     @Override
     public void end() {
-        cameras.remove(this);
     }
 }
