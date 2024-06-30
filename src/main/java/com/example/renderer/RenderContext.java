@@ -8,7 +8,6 @@ import com.example.data.ColorRGBA;
 import com.example.data.Image;
 import com.example.data.Matrix4x4;
 import com.example.data.Vector3;
-import com.example.data.Vector4;
 import com.example.data.VertexAttribute;
 import com.example.shader.Shader;
 import com.example.shader.Shader.Cull;
