@@ -7,8 +7,10 @@ import com.example.component.MeshRenderer;
 import com.example.data.ColorRGBA;
 import com.example.data.Image;
 import com.example.data.Matrix4x4;
+import com.example.data.Vector3;
 import com.example.data.VertexAttribute;
 import com.example.shader.Shader;
+import com.example.shader.Shader.Cull;
 
 public class RenderContext {
     public class DepthBuffer {
@@ -110,6 +112,28 @@ public class RenderContext {
             if (isDiscarded) {
                 continue;
             }
+            // Cull
+            if (meshRenderer.shader.cull != Cull.OFF) {
+                Vector3 AB = new Vector3(
+                        primitiveVertices[0].position.x - primitiveVertices[1].position.x,
+                        primitiveVertices[0].position.y - primitiveVertices[1].position.y,
+                        primitiveVertices[0].position.z - primitiveVertices[1].position.z);
+                Vector3 AC = new Vector3(
+                        primitiveVertices[0].position.x - primitiveVertices[2].position.x,
+                        primitiveVertices[0].position.y - primitiveVertices[2].position.y,
+                        primitiveVertices[0].position.z - primitiveVertices[2].position.z);
+                Vector3 cross = Vector3.cross(AB, AC);
+                if (meshRenderer.shader.cull == Cull.BACK) {
+                    if (cross.z <= 0) {
+                        continue;
+                    }
+                } else if (meshRenderer.shader.cull == Cull.FRONT) {
+                    if (cross.z >= 0) {
+                        continue;
+                    }
+                }
+            }
+
             // Translate to NDC;
             for (int j = 0; j < 3; j++) {
                 VertexAttribute v = primitiveVertices[j];
@@ -122,6 +146,5 @@ public class RenderContext {
                 frameBuffer.drawPixel(x, y, ColorRGBA.WHITE);
             }
         }
-
     }
 }
