@@ -7,7 +7,7 @@ public class SimpleRenderPipeline extends RenderPipeline {
 
     @Override
     public void Render(Camera camera, RenderContext renderContext) {
-        renderContext.clearRenderTarget(true, true, ColorRGBA.MAGENTA);
+        renderContext.clearRenderTarget(true, true, ColorRGBA.BLACK);
         renderContext.SetCameraProperties(camera);
         renderContext.drawRenderers();
     }

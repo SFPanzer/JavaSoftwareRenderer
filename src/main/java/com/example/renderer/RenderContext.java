@@ -8,6 +8,7 @@ import com.example.data.ColorRGBA;
 import com.example.data.Image;
 import com.example.data.Matrix4x4;
 import com.example.data.Vector3;
+import com.example.data.Vector4;
 import com.example.data.VertexAttribute;
 import com.example.shader.Shader;
 import com.example.shader.Shader.Cull;
@@ -114,15 +115,9 @@ public class RenderContext {
             }
             // Cull
             if (meshRenderer.shader.cull != Cull.OFF) {
-                Vector3 AB = new Vector3(
-                        primitiveVertices[0].position.x - primitiveVertices[1].position.x,
-                        primitiveVertices[0].position.y - primitiveVertices[1].position.y,
-                        primitiveVertices[0].position.z - primitiveVertices[1].position.z);
-                Vector3 AC = new Vector3(
-                        primitiveVertices[0].position.x - primitiveVertices[2].position.x,
-                        primitiveVertices[0].position.y - primitiveVertices[2].position.y,
-                        primitiveVertices[0].position.z - primitiveVertices[2].position.z);
-                Vector3 cross = Vector3.cross(AB, AC);
+                Vector3 BA = Vector3.sub(primitiveVertices[0].position, primitiveVertices[1].position);
+                Vector3 CA = Vector3.sub(primitiveVertices[0].position, primitiveVertices[2].position);
+                Vector3 cross = Vector3.cross(BA, CA);
                 if (meshRenderer.shader.cull == Cull.BACK) {
                     if (cross.z <= 0) {
                         continue;
@@ -140,11 +135,81 @@ public class RenderContext {
                 v.position.x /= v.position.w;
                 v.position.y /= v.position.w;
                 v.position.z /= v.position.w;
-
-                int x = (int) ((frameBuffer.getWidth() / 2) * (1 + v.position.x));
-                int y = (int) ((frameBuffer.getHeight() / 2) * (1 + v.position.y));
-                frameBuffer.drawPixel(x, y, ColorRGBA.WHITE);
             }
+            for (int j = 0; j < 3; j++) {
+                VertexAttribute v0 = primitiveVertices[j];
+                int x0 = ndcToIndex(v0.position.x, frameBuffer.getWidth());
+                int y0 = ndcToIndex(v0.position.y, frameBuffer.getHeight());
+                VertexAttribute v1 = primitiveVertices[(j + 1) % 3];
+                int x1 = ndcToIndex(v1.position.x, frameBuffer.getWidth());
+                int y1 = ndcToIndex(v1.position.y, frameBuffer.getHeight());
+
+                frameBuffer.drawLine(x0, y0, x1, y1, ColorRGBA.RED);
+                frameBuffer.drawPixel(x0, y0, ColorRGBA.WHITE);
+            }
+
+            /*
+             * // Rasterization.
+             * {
+             * // Calculate Rasterization bound.
+             * int minX = ndcToIndex(primitiveVertices[0].position.x,
+             * frameBuffer.getWidth());
+             * int minY = ndcToIndex(primitiveVertices[0].position.y,
+             * frameBuffer.getHeight());
+             * int maxX = minX, maxY = minY;
+             * 
+             * for (int j = 1; j < 3; j++) {
+             * int x = ndcToIndex(primitiveVertices[j].position.x, frameBuffer.getWidth());
+             * int y = ndcToIndex(primitiveVertices[j].position.y, frameBuffer.getHeight());
+             * maxX = x > maxX ? x : maxX;
+             * maxY = y > maxY ? y : maxY;
+             * minX = x < minX ? x : minX;
+             * minY = x < minY ? x : minY;
+             * }
+             * 
+             * minX = minX > 0 ? minX : 0;
+             * minY = minY > 0 ? minY : 0;
+             * maxX = maxX < frameBuffer.getWidth() - 1 ? maxX : frameBuffer.getWidth() - 1;
+             * maxY = maxY < frameBuffer.getHeight() - 1 ? maxY : frameBuffer.getHeight() -
+             * 1;
+             * 
+             * // Traverse the pixels.
+             * for (int y = minY; y <= maxY; y++) {
+             * for (int x = minX; x <= maxX; x++) {
+             * frameBuffer.drawPixel(x, y, ColorRGBA.RED);
+             * float ndcX = indexToNdc(x, frameBuffer.getWidth());
+             * float ndcY = indexToNdc(y, frameBuffer.getHeight());
+             * float ndcZ = 0;
+             * Vector4 pixelNDC = new Vector4(ndcX, ndcY, ndcZ, 1);
+             * 
+             * Vector3 BA = Vector3.sub(primitiveVertices[0].position,
+             * primitiveVertices[1].position);
+             * Vector3 CB = Vector3.sub(primitiveVertices[1].position,
+             * primitiveVertices[2].position);
+             * Vector3 AC = Vector3.sub(primitiveVertices[2].position,
+             * primitiveVertices[0].position);
+             * 
+             * Vector3 AP = Vector3.sub(pixelNDC, primitiveVertices[0].position);
+             * Vector3 BP = Vector3.sub(pixelNDC, primitiveVertices[1].position);
+             * Vector3 CP = Vector3.sub(pixelNDC, primitiveVertices[2].position);
+             * 
+             * if (Vector3.cross(AC, AP).z > 0 &&
+             * Vector3.cross(BA, BP).z > 0 &&
+             * Vector3.cross(CB, CP).z > 0) {
+             * 
+             * }
+             * }
+             * }
+             * }
+             */
         }
+    }
+
+    int ndcToIndex(float coordinate, int size) {
+        return (int) ((size / 2) * (1 + coordinate));
+    }
+
+    float indexToNdc(int index, int size) {
+        return (index - size / 2) / (size / 2);
     }
 }

@@ -37,6 +37,24 @@ public class Vector3 {
                 a.x * b.y - a.y * b.x);
     }
 
+    public static Vector3 plus(Vector3 a, Vector3 b) {
+        return new Vector3(a.x + b.x,
+                a.y + b.y,
+                a.z + b.z);
+    }
+
+    public static Vector3 sub(Vector3 a, Vector3 b) {
+        return new Vector3(a.x - b.x,
+                a.y - b.y,
+                a.z - b.z);
+    }
+
+    public static Vector3 sub(Vector4 a, Vector4 b) {
+        return new Vector3(a.x - b.x,
+                a.y - b.y,
+                a.z - b.z);
+    }
+
     public Vector3(float x, float y, float z) {
         this.x = x;
         this.y = y;

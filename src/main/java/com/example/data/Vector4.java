@@ -24,6 +24,20 @@ public class Vector4 {
         return new Vector4(output[0], output[1], output[2], output[3]);
     }
 
+    public static Vector4 plus(Vector4 a, Vector4 b) {
+        return new Vector4(a.x + b.x,
+                a.y + b.y,
+                a.z + b.z,
+                a.w + b.w);
+    }
+
+    public static Vector4 sub(Vector4 a, Vector4 b) {
+        return new Vector4(a.x - b.x,
+                a.y - b.y,
+                a.z - b.z,
+                a.w - b.w);
+    }
+
     public Vector4(float x, float y, float z, float w) {
         this.x = x;
         this.y = y;
